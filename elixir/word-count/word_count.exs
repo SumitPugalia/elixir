@@ -4,22 +4,15 @@ defmodule Words do
 
   Words are compared case-insensitively.
   """
-  @punctuation ["_", "$", "!", "&", "@", "%", "^", ":", ",", ";"]
+  @punctuation ["_", "$", "!", "&", "@", "%", "^", ":", ",", ";", " "]
 
   @spec count(String.t()) :: map
   def count(sentence) do
   	sentence
-  	|> String.replace(@punctuation, " ")
-  	|> String.split(" ")
+  	|> String.split(@punctuation, trim: true)
 		|> Enum.reduce(%{}, fn word, acc ->
 				word = String.downcase(word)
-				case Map.get(acc, word) do
-					nil ->
-						Map.put(acc, word, 1)
-					count ->
-						Map.put(acc, word, count + 1)
-				end
+        Map.update(acc, word, 1, &(&1 + 1))
 		end)
-		|> Map.delete("")
   end
 end
